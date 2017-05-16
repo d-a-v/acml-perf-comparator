@@ -1,0 +1,30 @@
+#!/bin/bash
+
+idx=0
+
+idx=$((idx + 1))
+name[$idx]=openblas
+blas[$idx]=/usr/lib/openblas-base/libblas.a
+lapack[$idx]=/usr/lib/openblas-base/liblapack.a
+
+idx=$((idx + 1))
+name[$idx]=netlib
+blas[$idx]=/usr/lib/libblas/libblas.a
+lapack[$idx]=/usr/lib/lapack/liblapack.a
+
+idx=$((idx + 1))
+name[$idx]=atlas
+blas[$idx]=/usr/lib/atlas-base/atlas/libblas.a
+lapack[$idx]=/usr/lib/atlas-base/atlas/liblapack.a
+
+cd ../performance
+
+for i in $(seq 1 $idx); do
+
+	[ -r ${blas[$i]} ] || { echo "unreadable: ${blas[$i]} - skipping"; continue; }
+	[ -r ${lapack[$i]} ] || { echo "unreadable: ${lapack[$i]} - skipping"; continue; }
+
+	make -f ../perfcomp/GNUmakefile ALTLIBS="${blas[$i]} ${lapack[$i]}" NAME=-${name[$i]} "$@"
+done
+
+make -f ../perfcomp/GNUmakefile NAME=-acml "$@"

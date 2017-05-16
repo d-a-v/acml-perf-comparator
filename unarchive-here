@@ -1,0 +1,14 @@
+#!/bin/sh
+
+file=../acml-6.1.0.31-gfortran64.tgz
+test -z "$1" || file="$1"
+echo "unarchiving $file"
+tar xfz "$file"
+
+echo ""
+echo "you may rename those directories:"
+echo ""
+for i in */lib/resources; do
+	echo "	mv '$i' '$i.no'"
+done
+echo ""
